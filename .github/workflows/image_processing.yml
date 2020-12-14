@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - name: Obtain temporary token
-        id: workflow_token
-        uses: peter-murray/workflow-application-token-action@v1
-        with:
-          application_id: ${{ secrets.OCTODEMOBOT_APPLICATION_ID_REPO_AUTOMATION }}
-          application_private_key: ${{ secrets.OCTODEMOBOT_APPLICATION_KEY_REPO_AUTOMATION }}
+#       - name: Obtain temporary token
+#         id: workflow_token
+#         uses: peter-murray/workflow-application-token-action@v1
+#         with:
+#           application_id: ${{ secrets.OCTODEMOBOT_APPLICATION_ID_REPO_AUTOMATION }}
+#           application_private_key: ${{ secrets.OCTODEMOBOT_APPLICATION_KEY_REPO_AUTOMATION }}
 
       - name: Clone Action
         uses: actions/checkout@v2
@@ -36,7 +36,7 @@ jobs:
         uses: ./graphicsmagick-action
         with:
           image_url: ${{ github.event.inputs.image_url }}
-          size: 64
+          output_image_width: 64
 
       - name: Save Image
         uses: actions/upload-artifact@v2
