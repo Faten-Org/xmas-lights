@@ -1,0 +1,16 @@
+name: Run
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run:
+    name: Run
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Execute Python
+        run: |
+          python3 run.py
+        working-directory: ./text
