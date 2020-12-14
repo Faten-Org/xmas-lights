@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         
-      - name: Execute Python
+      - name: Execute Python Application
         run: |
-          sudo python3 run.py
-        working-directory: ./text
+          sudo python3 run.py images/thumbnail.jpg
+        working-directory: ./images
