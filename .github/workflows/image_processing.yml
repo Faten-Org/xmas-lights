@@ -25,7 +25,8 @@ jobs:
       - name: Clone Action
         uses: actions/checkout@v2
         with:
-          token: ${{ steps.workflow_token.outputs.token }}
+          token: ${{ secrets.OCTODEMOBOT_WINTERFEST_TOKEN }}
+          #token: ${{ steps.workflow_token.outputs.token }}
           path: graphicsmagick-action
           repository: octodemo/graphicsmagick-image-converter-action
           ref: main
