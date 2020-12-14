@@ -6,6 +6,7 @@ on:
       image_url:
         description: Image URL
         required: true
+        default: https://octodex.github.com/images/dinotocat.png
 
 jobs:
   process_image:
