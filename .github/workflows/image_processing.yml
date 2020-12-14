@@ -27,6 +27,7 @@ jobs:
           token: ${{ steps.workflow_token.outputs.token }}
           path: graphicsmagick-action
           repository: octodemo/graphicsmagick-image-converter-action
+          ref: main
 
       - name: Fetch and convert image
         id: processed_image
