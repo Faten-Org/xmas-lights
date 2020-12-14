@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Obtain temporary token
         id: workflow_token
-        uses: peter-murray/workflow-application-token-action@v1
+        uses: peter-murray/workflow-application-token-action@display-token-permissions
         with:
           application_id: ${{ secrets.OCTODEMOBOT_APPLICATION_ID_REPO_AUTOMATION }}
           application_private_key: ${{ secrets.OCTODEMOBOT_APPLICATION_KEY_REPO_AUTOMATION }}
