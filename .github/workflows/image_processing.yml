@@ -15,12 +15,15 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-#       - name: Obtain temporary token
-#         id: workflow_token
-#         uses: peter-murray/workflow-application-token-action@v1
-#         with:
-#           application_id: ${{ secrets.OCTODEMOBOT_APPLICATION_ID_REPO_AUTOMATION }}
-#           application_private_key: ${{ secrets.OCTODEMOBOT_APPLICATION_KEY_REPO_AUTOMATION }}
+      - name: Obtain temporary token
+        id: workflow_token
+        uses: peter-murray/workflow-application-token-action@v1
+        with:
+          application_id: ${{ secrets.OCTODEMOBOT_APPLICATION_ID_REPO_AUTOMATION }}
+          application_private_key: ${{ secrets.OCTODEMOBOT_APPLICATION_KEY_REPO_AUTOMATION }}
+
+      - name: Manual Clone
+        run: git clone https://x-access-token:${{ steps.workflow_token.outputs.token }}@github.com/octodemo/graphicsmagick-image-converter-action
 
       - name: Clone Action
         uses: actions/checkout@v2
