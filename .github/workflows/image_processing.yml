@@ -1,0 +1,73 @@
+name: Image Processing and Display
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_url:
+        description: Image URL
+        required: true
+
+jobs:
+  process_image:
+    name: Fetch and Process Image
+
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Obtain temporary token
+        id: workflow_token
+        uses: peter-murray/workflow-application-token-action@v1
+        with:
+          application_id: ${{ secrets.OCTODEMOBOT_APPLICATION_ID_REPO_AUTOMATION }}
+          application_private_key: ${{ secrets.OCTODEMOBOT_APPLICATION_KEY_REPO_AUTOMATION }}
+
+      - name: Clone Action
+        uses: actions/checkout@v2
+        with:
+          token: ${{ steps.workflow_token.outputs.token }}
+          path: graphicsmagick-action
+          repository: octodemo/graphicsmagick-image-converter-action
+
+      - name: Fetch and convert image
+        id: processed_image
+        uses: ./graphicsmagick-action
+        with:
+          image_url: ${{ github.event.inputs.image_url }}
+          size: 64
+
+      - name: Save Image
+        uses: actions/upload-artifact@v2
+        with:
+          name: images
+          path: ${{ steps.processed_image.outputs.image }}
+
+
+  display_image:
+    name: Display Image
+
+    runs-on: self-hosted
+
+    needs:
+      - process_image
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download processed Images
+        id: download_images
+        uses: actions.download-artifact@v2
+        with:
+          name: images
+          path: ./processed
+
+      - name: Show unpacked images
+        run: |
+          echo "Unpacked Images from artifact:"
+          ls -la ${{ steps.download_images.outputs.download-path }}
+
+      - name: Display image on matrix display
+        run: |
+          python3 run.py ${{ steps.download_images.outputs.download-path }}/thumbnail.jpg
+        working-directory: ./images
+      
