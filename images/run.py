@@ -14,10 +14,10 @@ image = Image.open(image_file)
 
 # Configuration for the matrix
 options = RGBMatrixOptions()
-options.rows = 32
+options.rows = 64
 options.chain_length = 1
 options.parallel = 1
-options.hardware_mapping = 'regular'  # If you have an Adafruit HAT: 'adafruit-hat'
+options.hardware_mapping = 'adafruit-hat'
 
 matrix = RGBMatrix(options = options)
 
@@ -26,9 +26,12 @@ image.thumbnail((matrix.width, matrix.height), Image.ANTIALIAS)
 
 matrix.SetImage(image.convert('RGB'))
 
-try:
-    print("Press CTRL-C to stop.")
-    while True:
-        time.sleep(100)
-except KeyboardInterrupt:
-    sys.exit(0)
+time.sleep(10 * 1000)
+sys.exit(0)
+
+# try:
+    # print("Press CTRL-C to stop.")
+    # while True:
+    #     time.sleep(100)
+# except KeyboardInterrupt:
+    # sys.exit(0)
