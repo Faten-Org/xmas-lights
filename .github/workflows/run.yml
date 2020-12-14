@@ -15,5 +15,5 @@ jobs:
         
       - name: Execute Python
         run: |
-          python3 run.py
+          sudo python3 run.py
         working-directory: ./text
