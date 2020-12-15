@@ -1,0 +1,29 @@
+name: Winterfest Logo
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_path:
+        description: Image path
+        required: true
+        default: images/winterfest.png
+
+jobs:
+  display:
+    name: Display Static Image
+
+    runs-on:
+      - self-hosted
+      - ARM
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      #
+      # Display image that is committed to the repository
+      #
+      - name: Execute Python Application
+        run: |
+          sudo python3 run.py ${{ github.event.inputs.image_path }}
+        working-directory: ./images

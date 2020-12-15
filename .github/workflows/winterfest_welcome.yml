@@ -1,0 +1,21 @@
+name: Winterfest Welcome
+
+on:
+  workflow_dispatch:
+
+jobs:
+  display_welcome:
+    name: Display Welcome
+
+    runs-on:
+      - self-hosted
+      - ARM
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+       
+      - name: Display Welcome Message
+        run: |
+          sudo python3 run.py
+        working-directory: ./text

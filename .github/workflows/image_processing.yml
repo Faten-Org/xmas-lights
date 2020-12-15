@@ -15,25 +15,20 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - name: Obtain temporary token
-        id: workflow_token
-        uses: peter-murray/workflow-application-token-action@v1
-        with:
-          application_id: ${{ secrets.OCTODEMOBOT_APPLICATION_ID_REPO_AUTOMATION }}
-          application_private_key: ${{ secrets.OCTODEMOBOT_APPLICATION_KEY_REPO_AUTOMATION }}
-
-      - name: Manual Clone
-        run: git clone https://x-access-token:${{ steps.workflow_token.outputs.token }}@github.com/octodemo/graphicsmagick-image-converter-action
-
+      #
+      # The action is private in our octodemo organization, so need to clone it to use it
+      #
       - name: Clone Action
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.OCTODEMOBOT_WINTERFEST_TOKEN }}
-          #token: ${{ steps.workflow_token.outputs.token }}
           path: graphicsmagick-action
           repository: octodemo/graphicsmagick-image-converter-action
           ref: main
 
+      #
+      # Invoke the GitHub Action we have cloned
+      #
       - name: Fetch and convert image
         id: processed_image
         uses: ./graphicsmagick-action
@@ -41,6 +36,9 @@ jobs:
           image_url: ${{ github.event.inputs.image_url }}
           output_image_width: 64
 
+      #
+      # Attach the Image as an Artifact so we can access it after the workflow runs, as well as pass it to other jobs
+      #
       - name: Save Image
         uses: actions/upload-artifact@v2
         with:
@@ -51,8 +49,11 @@ jobs:
   display_image:
     name: Display Image
 
-    runs-on: self-hosted
+    runs-on: 
+      - self-hosted
+      - ARM
 
+    # We have a requirement on the process_image job, it needs to complete before we can run
     needs:
       - process_image
 
@@ -60,6 +61,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      #
+      # Download the process_image artifacts that were uploaded and stored with the workflow run
+      #
       - name: Download processed Images
         id: download_images
         uses: actions/download-artifact@v2
@@ -67,7 +71,7 @@ jobs:
           name: images
           path: ./processed
 
-      - name: Show unpacked images
+      - name: Show unpacked images on disk
         run: |
           echo "Unpacked Images from artifact:"
           ls -la ${{ steps.download_images.outputs.download-path }}

@@ -8,17 +8,18 @@ import time
 class RunText(SampleBase):
     def __init__(self, *args, **kwargs):
         super(RunText, self).__init__(*args, **kwargs)
-        self.parser.add_argument("-t", "--text", help="The text to scroll on the RGB LED panel", default="Hello world!")
+        self.parser.add_argument("-t", "--text", help="The text to scroll on the RGB LED panel", default="Welcome to GitHub Winterfest 2020!")
 
     def run(self):
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         font = graphics.Font()
-        font.LoadFont("../fonts/knxt.bdf")
+        font.LoadFont("./fonts/knxt.bdf")
         textColor = graphics.Color(255, 255, 0)
         pos = offscreen_canvas.width
         my_text = self.args.text
 
-        while True:
+        end_time = time.time() + 20
+        while time.time() < end_time:
             offscreen_canvas.Clear()
             len = graphics.DrawText(offscreen_canvas, font, pos, 10, textColor, my_text)
             pos -= 1
