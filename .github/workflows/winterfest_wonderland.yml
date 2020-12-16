@@ -116,7 +116,9 @@ jobs:
   xmas_disco_lights:
     name: 🎄  Xmas Lights
     
-    runs-on: self-hosted
+    runs-on:
+      - self-hosted
+      - x64
     
     needs:
       - extract_wonder
