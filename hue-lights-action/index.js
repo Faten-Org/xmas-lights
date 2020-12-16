@@ -4,31 +4,24 @@ const path = require('path')
   , LightState = v3.lightStates.LightState
 ;
 
-const MAX_COUNT = 10;
-
 async function run() {
   try {
     const username = getRequiredInputValue('username')
       , host = getRequiredInputValue('bridge')
+      , time = getRequiredInputValue('time_in_seconds')
     ;
 
     const api = await getHueApi(host, username);
-
     const lightNames = getLightNames();
+
+    // Retrieve the corresponding Lights from the bridge that match the names provided
     const lights = await getLights(api, lightNames);
 
-    const results = lights.map(light => {
-      return {
-        id: light.id,
-        name: light.name,
-        type: light.type,
-        modelid: light.modelid
-      }
-    })
+    // Shiny Xmas Disco Ball ;-)
+    await xmasDisco(api, lights.map(light => light.id), time);
 
-    core.setOutput('lights', results);
-    await xmasDisco(api, lights.map(light => light.id));
-
+    // Report via the outputs the lights that we interacted with
+    setLightOutputs(lights);
   } catch (err) {
     core.setFailed(err.message);
   }
@@ -36,15 +29,35 @@ async function run() {
 
 run();
 
+
 function getRequiredInputValue(key) {
   return core.getInput(key, {required: true});
 }
 
+
+function setLightOutputs(lights) {
+  const results = lights.map(light => {
+    return {
+      id: light.id,
+      name: light.name,
+      type: light.type,
+      modelid: light.modelid
+    }
+  });
+
+  core.setOutput('lights', results);
+}
+
+
+/**
+ * Convert light names parameter into an array of names.
+ * @returns {String[]} the lights as an array
+ */
 function getLightNames() {
   const lightNames = getRequiredInputValue('light_names');
-
   return lightNames.split(',').map(name => name.trim());
 }
+
 
 async function getLights(api, lightNames) {
   console.log(`Looking for lights: ${JSON.stringify(lightNames)}`);
@@ -59,7 +72,12 @@ async function getLights(api, lightNames) {
   });
 }
 
-async function xmasDisco(api, lightIds) {
+
+async function xmasDisco(api, lightIds, time) {
+  const sleep = 300
+    , maxLoops = Math.floor(time * 1000 / sleep)
+  ;
+
   let looping = true
     , count = 0
     , up = false
@@ -67,34 +85,40 @@ async function xmasDisco(api, lightIds) {
     , briInc = 100
   ;
 
+  // Turn lights on to start
   let lightState = new LightState().on();
   await sendLightUpdate(api, lightState, ...lightIds);
 
   do {
     const lightState = new LightState().hue_inc(hueInc).bri_inc(briInc).transitionInstant();
-    await sendLightUpdate(api, lightState, lightIds);
 
-    count++;
+    await sendLightUpdate(api, lightState, ...lightIds);
+
+    // Alternate the settings for the lights
     up = !up;
-
     hueInc *= -1;
     briInc *= -1;
 
-    if (count > MAX_COUNT) {
+    count++;
+    if (count > maxLoops) {
       looping = false;
     }
 
-    await sleep(500);
+    await sleep(300);
   } while (looping);
 
+  // Turn lights off once finished
   lightState = new LightState().off();
   await sendLightUpdate(api, lightState, ...lightIds);
 }
+
 
 async function sendLightUpdate(api, state, ...ids) {
   const promises = [];
 
   ids.forEach(id => {
+    core.info(`Updating light ${id} to ${state.getPayload()}`);
+
     promises.push(api.lights.setLightState(id, state));
   });
 

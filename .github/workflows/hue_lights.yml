@@ -24,7 +24,7 @@ jobs:
         with:
           bridge: ${{ secrets.HUE_BRIDGE_IP_ADDRESS }}
           username: ${{ secrets.HUE_USERNAME }}
-          light_names: Office Desk Left, Office corner
+          light_names: Office Desk Left, Office corner, Disco Strip, Office Shelf
 
       - name: Display Lights
         run: echo "${{ steps.hue.outputs.lights }}"

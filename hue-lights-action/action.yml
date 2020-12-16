@@ -15,6 +15,11 @@ inputs:
     description: An array of light names to retrieve from the bridge
     required: true
 
+  time_in_seconds:
+    description: The number of seconds to control the lights for
+    required: true
+    default: 10
+
 outputs:
   lights:
     description: The lights that were found in the Hue bridge
