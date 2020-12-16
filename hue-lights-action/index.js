@@ -24,7 +24,7 @@ async function run() {
     setLightOutputs(lights);
   } catch (err) {
     core.setFailed(err.message);
-    err.stackTrace();
+    core.error(err.stack());
   }
 }
 
