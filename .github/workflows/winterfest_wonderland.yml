@@ -7,12 +7,13 @@ on:
 jobs:
   extract_wonder:
     name: 🔍 Extract Wonderland Parameters
+    if: contains(github.event.issue.labels.*.name, 'Winterfest')
     
     runs-on: ubuntu-20.04
     
     outputs:
       image_url: ${{ steps.register.outputs.image_url }}
-      time_seconds: ${{ steps.register.outputs.disco_time_seconds }}
+      time_seconds: ${{ steps.register.outputs.disco_time_in_seconds }}
     
     steps:
       - name: Checkout Actions Source
@@ -32,9 +33,26 @@ jobs:
           
       - name: Set Outputs
         id: register
-        run: |
-          echo "::set-output name=image_url::${{ steps.issue_body.outputs.image_url }}"
-          echo "::set-output name=disco_time_seconds::${{ steps.issue_body.outputs.time_in_seconds }}"
+        uses: actions/github-script@v3
+        env:
+          ISSUE_PAYLOAD: ${{ steps.issue_body.outputs.payload }}
+        with:
+          script: |
+            const issuePayload = JSON.parse(process.env.ISSUE_PAYLOAD);
+            
+            if (! issuePayload.image_url) {
+              core.setFailure('Missing image URL in issue payload');
+            } else {
+              core.setOutput('image_url', issuePayload.image_url);
+            }
+            
+            if (! issuePayload.time_in_seconds) {
+              // default to 10 seconds
+              core.setOutput('disco_time_in_seconds', 10);
+            } else {
+              core.setOutput('disco_time_in_seconds', issuePayload.time_in_seconds);
+            }
+            
 
 
   process_image:
