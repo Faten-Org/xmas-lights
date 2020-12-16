@@ -96,7 +96,7 @@ async function sendLightUpdate(api, state, ...ids) {
 }
 
 async function sleep(timeMs) {
-  return new Promise(resolve => setTimeout(resolve, time));
+  return new Promise(resolve => setTimeout(resolve, timeMs));
 }
 
 async function getHueApi(host, username) {
