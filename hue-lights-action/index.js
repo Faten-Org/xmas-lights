@@ -27,7 +27,7 @@ async function run() {
     })
 
     core.setOutput('lights', results);
-    await xmasDisco(lights.map(api, light => light.id));
+    await xmasDisco(api, lights.map(light => light.id));
 
   } catch (err) {
     core.setFailed(err.message);
@@ -69,7 +69,7 @@ async function xmasDisco(api, lightIds) {
   await sendLightUpdate(api, lightState, ...lightIds);
 
   do {
-    const lightState = new LightState().on().hue_inc(60);
+    const lightState = new LightState().hue_inc(60);
     await sendLightUpdate(api, lightState, lightIds);
 
     count++;
