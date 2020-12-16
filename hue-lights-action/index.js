@@ -15,7 +15,16 @@ async function run() {
     const lightNames = getLightNames();
     const lights = await getLights(api, lightNames);
 
-    core.setOutput('lights', lights);
+    const results = lights.map(light => {
+      return {
+        id: light.id,
+        name: light.name,
+        type: light.type,
+        modelid: light.modelid
+      }
+    })
+
+    core.setOutput('lights', results);
   } catch (err) {
     core.setFailed(err.message);
   }
@@ -43,7 +52,6 @@ async function getLights(api, lightNames) {
   }
 
   return api.lights.getAll().then(lights => {
-    console.log(JSON.stringify(lights));
     return lights.filter(light => {
       return lightNames.indexOf(light.name) > -1;
     });
