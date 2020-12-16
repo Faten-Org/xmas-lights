@@ -39,10 +39,7 @@ function getRequiredInputValue(key) {
 function getLightNames() {
   const lightNames = getRequiredInputValue('light_names');
 
-  if (typeof lightNames === 'string') {
-    return [lightNames];
-  }
-  return [].concat(...lightNames);
+  return lightNames.split(',').map(name => name.trim());
 }
 
 async function getLights(api, lightNames) {
