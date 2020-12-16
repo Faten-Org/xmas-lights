@@ -82,7 +82,7 @@ async function xmasDisco(api, lightIds, time) {
   let looping = true
     , count = 0
     , hues = [8566, 23718, 61678]
-    , bris = [254, 120, 10]
+    , bris = [254, 200, 150, 100, 10]
   ;
 
   // Turn lights on to start
@@ -93,13 +93,9 @@ async function xmasDisco(api, lightIds, time) {
     const promises = [];
 
     lightIds.forEach(id => {
-      const hueIdx = getRandomIndex(0, 2)
-        , briIdx = getRandomIndex(0, 2)
-        ;
-
       const state = new LightState()
-        .hue(hues[hueIdx])
-        .bri(bris[briIdx])
+        .hue(hues[getRandomIndex(0, 2)])
+        .bri(bris[getRandomIndex(0, 4)])
         .transitionInstant();
 
       core.info(`Updating light ${id} to ${JSON.stringify(state.getPayload())}`);
