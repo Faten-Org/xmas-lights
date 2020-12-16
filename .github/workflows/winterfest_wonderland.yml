@@ -6,7 +6,7 @@ on:
     
 jobs:
   extract_wonder:
-    name: 🔍 Extract Wonderland Parameters
+    name: 🔍  Extract Wonderland Parameters
     if: contains(github.event.issue.labels.*.name, 'Winterfest')
     
     runs-on: ubuntu-20.04
@@ -56,7 +56,7 @@ jobs:
 
 
   process_image:
-    name: 📷 Process Image
+    name: 📷  Process Image
     
     runs-on: ubuntu-20.04
     
@@ -87,7 +87,7 @@ jobs:
           
           
   display_image:
-    name: 🎁 Display Image
+    name: 🎁  Display Image
 
     runs-on: 
       - self-hosted
@@ -114,7 +114,7 @@ jobs:
         
         
   xmas_disco_lights:
-    name: 🎄 Xmas Lights
+    name: 🎄  Xmas Lights
     
     runs-on: self-hosted
     
@@ -139,7 +139,7 @@ jobs:
           
           
   winterfest:
-    name: 🏁 Winterfest
+    name: 🏁  Winterfest ❄️ ☃️
 
     runs-on: 
       - self-hosted
