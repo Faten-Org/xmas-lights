@@ -63,17 +63,23 @@ async function xmasDisco(api, lightIds) {
   let looping = true
     , count = 0
     , up = false
+    , hueInc = 20000
+    , briInc = 100
   ;
 
   let lightState = new LightState().on();
   await sendLightUpdate(api, lightState, ...lightIds);
 
   do {
-    const lightState = new LightState().hue_inc(60);
+    const lightState = new LightState().hue_inc(hueInc).bri_inc(briInc).transitionInstant();
     await sendLightUpdate(api, lightState, lightIds);
 
     count++;
     up = !up;
+
+    hueInc *= -1;
+    briInc *= -1;
+
     if (count > MAX_COUNT) {
       looping = false;
     }
