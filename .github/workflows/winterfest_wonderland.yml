@@ -1,0 +1,141 @@
+name: ☃️ ❄️ ☃️ Winterfest Wonderland ☃️ ❄️ ☃️
+
+on:
+  issues:
+    types: [opened, reopened]
+    
+jobs:
+  extract_wonder:
+    name: 🔍 Extract Wonderland Parameters
+    
+    runs-on: ubuntu-20.04
+    
+    outputs:
+      image_url: ${{ steps.register.outputs.image_url }}
+      time_seconds: ${{ steps.register.outputs.disco_time_seconds }}
+    
+    steps:
+      - name: Checkout Actions Source
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.OCTODEMOBOT_WINTERFEST_TOKEN }}
+          repository: octodemo/issue-body-parser-action
+          path: issue-body-parser-action
+          ref: master
+
+      - name: Extract Details from Issue Body
+        id: issue_body
+        uses: ./issue-body-parser-action
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          issue_id: ${{ github.event.issue.number }}
+          
+      - name: Set Outputs
+        id: register
+        run: |
+          echo "::set-output name=image_url::${{ steps.issue_body.outputs.image_url }}"
+          echo "::set-output name=disco_time_seconds::${{ steps.issue_body.outputs.time_in_seconds }}"
+
+
+  process_image:
+    name: 📷 Process Image
+    
+    runs-on: ubuntu-20.04
+    
+    needs:
+     - extract_wonder
+    
+    steps:
+      - name: Clone Action
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.OCTODEMOBOT_WINTERFEST_TOKEN }}
+          path: graphicsmagick-action
+          repository: octodemo/graphicsmagick-image-converter-action
+          ref: main
+          
+      - name: Fetch and convert image
+        id: processed_image
+        uses: ./graphicsmagick-action
+        with:
+          image_url: ${{ needs.extract_wonder.outputs.image_url }}
+          output_image_width: 64
+          
+      - name: Save Image as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: images
+          path: ${{ steps.processed_image.outputs.image }}
+          
+          
+  display_image:
+    name: 🎁 Display Image
+
+    runs-on: 
+      - self-hosted
+      - ARM
+
+    needs:
+      - process_image
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download processed Images
+        id: download_images
+        uses: actions/download-artifact@v2
+        with:
+          name: images
+          path: ./processed
+
+      - name: Display image on matrix display
+        run: |
+          python3 run.py ${{ steps.download_images.outputs.download-path }}/thumbnail.jpg
+        working-directory: ./images
+        
+        
+  xmas_disco_lights:
+    name: 🎄 Xmas Lights
+    
+    runs-on: self-hosted
+    
+    needs:
+      - extract_wonder
+    
+    environment:
+      name: local
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Execute Hue Action
+        id: hue
+        uses: ./hue-lights-action
+        with:
+          bridge: ${{ secrets.HUE_BRIDGE_IP_ADDRESS }}
+          username: ${{ secrets.HUE_USERNAME }}
+          light_names: Office Desk Left, Office corner, Disco Strip, Office Shelf
+          time_in_seconds: ${{ needs.extract_wonder.outputs.time_seconds }}
+          
+          
+  winterfest:
+    name: 🏁 Winterfest
+
+    runs-on: 
+      - self-hosted
+      - ARM
+
+    needs:
+      - display_image
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Display image on matrix display
+        run: |
+          python3 run.py images/winterfest.png
+        working-directory: ./images
+    
