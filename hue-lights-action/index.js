@@ -10,10 +10,10 @@ async function run() {
       , host = getRequiredInputValue('bridge')
     ;
 
-    const api = getHueApi(host, username);
+    const api = await getHueApi(host, username);
 
     const lightNames = getLightNames();
-    const lights = getLights(api, lightNames);
+    const lights = await getLights(api, lightNames);
 
     core.setOutput('lights', lights);
   } catch (err) {
