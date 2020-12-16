@@ -1,7 +1,7 @@
 ---
 name: Winterfest - Xmas Lights in Action(s)
-about: Open an issue to define a Festive Light Display
-title: Winterfest: Festive Lights
+about: An issue to define a Festive Light Display
+title: Winterfest - Festive Lights
 labels: Winterfest
 
 ---
