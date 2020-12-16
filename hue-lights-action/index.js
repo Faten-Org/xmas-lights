@@ -75,8 +75,8 @@ async function getLights(api, lightNames) {
 
 
 async function xmasDisco(api, lightIds, time) {
-  const sleep = 300
-    , maxLoops = Math.floor(time * 1000 / sleep)
+  const sleepPeriod = 300
+    , maxLoops = Math.floor(time * 1000 / sleepPeriod)
   ;
 
   let looping = true
@@ -105,7 +105,7 @@ async function xmasDisco(api, lightIds, time) {
       looping = false;
     }
 
-    await sleep(300);
+    await sleep(sleepPeriod);
   } while (looping);
 
   // Turn lights off once finished
