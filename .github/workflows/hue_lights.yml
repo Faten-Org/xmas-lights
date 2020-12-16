@@ -18,9 +18,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Execute Python Application
+      - name: Execute Hue Action
+        id: hue
         uses: ./hue-lights-action
         with:
           bridge: ${{ secrets.HUE_BRIDGE_IP_ADDRESS }}
           username: ${{ secrets.HUE_USERNAME }}
           light_names: Office Desk Left
+
+      - name: Display Lights
+        run: echo "${{ steps.hue.outputs.lights }}"

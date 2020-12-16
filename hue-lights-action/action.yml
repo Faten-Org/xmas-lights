@@ -3,7 +3,7 @@ description: GitHub Action for interacting with Hue lights
 author: Peter Murray
 
 inputs:
-  host:
+  bridge:
     description: The Hue bridge IP address or hostname
     required: true
 
