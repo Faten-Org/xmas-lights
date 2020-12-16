@@ -37,11 +37,13 @@ function getLightNames() {
 }
 
 async function getLights(api, lightNames) {
+  console.log(`Looking for lights: ${JSON.stringify(lightNames)}`);
   if (!lightNames || lightNames.length > 0) {
     return Promise.resolve([]);
   }
 
   return api.lights.getAll().then(lights => {
+    console.log(JSON.stringify(lights));
     return lights.filter(light => {
       return lightNames.indexOf(light.name) > -1;
     });
