@@ -81,9 +81,8 @@ async function xmasDisco(api, lightIds, time) {
 
   let looping = true
     , count = 0
-    , up = false
-    , hueInc = 20000
-    , briInc = 100
+    , hues = [8566, 23718, 61678]
+    , bris = [254, 120, 10]
   ;
 
   // Turn lights on to start
@@ -91,14 +90,16 @@ async function xmasDisco(api, lightIds, time) {
   await sendLightUpdate(api, lightState, ...lightIds);
 
   do {
-    const lightState = new LightState().hue_inc(hueInc).bri_inc(briInc).transitionInstant();
+    const hueIdx = getRandomIndex(0, 2)
+      , briIdx = getRandomIndex(0, 2)
+    ;
+
+    const lightState = new LightState()
+      .hue(hues[hueIdx])
+      .bri(bris[briIdx])
+      .transitionInstant();
 
     await sendLightUpdate(api, lightState, ...lightIds);
-
-    // Alternate the settings for the lights
-    up = !up;
-    hueInc *= -1;
-    briInc *= -1;
 
     count++;
     if (count > maxLoops) {
@@ -111,6 +112,10 @@ async function xmasDisco(api, lightIds, time) {
   // Turn lights off once finished
   lightState = new LightState().off();
   await sendLightUpdate(api, lightState, ...lightIds);
+}
+
+function getRandomIndex(min, max) {
+  return Math.floor(Math.random() * (max + 1 - min) + min);
 }
 
 
