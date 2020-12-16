@@ -4,6 +4,8 @@ const path = require('path')
   , LightState = v3.lightStates.LightState
 ;
 
+const MAX_COUNT = 10;
+
 async function run() {
   try {
     const username = getRequiredInputValue('username')
@@ -25,6 +27,8 @@ async function run() {
     })
 
     core.setOutput('lights', results);
+    await xmasDisco(lights.map(api, light => light.id));
+
   } catch (err) {
     core.setFailed(err.message);
   }
@@ -53,6 +57,46 @@ async function getLights(api, lightNames) {
       return lightNames.indexOf(light.name) > -1;
     });
   });
+}
+
+async function xmasDisco(api, lightIds) {
+  let looping = true
+    , count = 0
+    , up = false
+  ;
+
+  let lightState = new LightState().on();
+  await sendLightUpdate(api, lightState, ...lightIds);
+
+  do {
+    const lightState = new LightState().on().hue_inc(60);
+    await sendLightUpdate(api, lightState, lightIds);
+
+    count++;
+    up = !up;
+    if (count > MAX_COUNT) {
+      looping = false;
+    }
+
+    await sleep(500);
+  } while (looping);
+
+  lightState = new LightState().off();
+  await sendLightUpdate(api, lightState, ...lightIds);
+}
+
+async function sendLightUpdate(api, state, ...ids) {
+  const promises = [];
+
+  ids.forEach(id => {
+    promises.push(api.lights.setLightState(id, state));
+  });
+
+  return Promise.all(promises);
+}
+
+async function sleep(timeMs) {
+  return new Promise(resolve => setTimeout(resolve, time));
 }
 
 async function getHueApi(host, username) {
