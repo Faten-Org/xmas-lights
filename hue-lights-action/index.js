@@ -90,16 +90,23 @@ async function xmasDisco(api, lightIds, time) {
   await sendLightUpdate(api, lightState, ...lightIds);
 
   do {
-    const hueIdx = getRandomIndex(0, 2)
-      , briIdx = getRandomIndex(0, 2)
-    ;
+    const promises = [];
 
-    const lightState = new LightState()
-      .hue(hues[hueIdx])
-      .bri(bris[briIdx])
-      .transitionInstant();
+    lightIds.forEach(id => {
+      const hueIdx = getRandomIndex(0, 2)
+        , briIdx = getRandomIndex(0, 2)
+        ;
 
-    await sendLightUpdate(api, lightState, ...lightIds);
+      const state = new LightState()
+        .hue(hues[hueIdx])
+        .bri(bris[briIdx])
+        .transitionInstant();
+
+      core.info(`Updating light ${id} to ${JSON.stringify(state.getPayload())}`);
+      promises.push(api.lights.setLightState(id, state));
+    });
+
+    await Promise.all(promises);
 
     count++;
     if (count > maxLoops) {
