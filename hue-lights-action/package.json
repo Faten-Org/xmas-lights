@@ -1,0 +1,19 @@
+{
+  "name": "hue-lights-action",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build -o dist -m index.js"
+  },
+  "keywords": [],
+  "author": "Peter Murray",
+  "license": "MIT",
+  "dependencies": {
+    "node-hue-api": "^5.0.0-alpha.2",
+    "@actions/core": "1.2.6"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.25.1"
+  }
+}

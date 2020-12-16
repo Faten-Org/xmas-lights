@@ -1,0 +1,26 @@
+name: Hue Lights
+
+on:
+  workflow_dispatch:
+
+jobs:
+  hue_lights:
+    name: Hue Lights
+
+    runs-on:
+      - self-hosted
+      - ARM
+
+    environment:
+      name: local
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Execute Python Application
+        uses: ./hue-lights-action
+        with:
+          bridge: ${{ secrets.HUE_BRIDGE_IP_ADDRESS }}
+          username: ${{ secrets.HUE_USERNAME }}
+          light_names: Office Desk Left

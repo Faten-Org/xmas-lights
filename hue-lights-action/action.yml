@@ -1,0 +1,24 @@
+name: Hue Lights Action
+description: GitHub Action for interacting with Hue lights
+author: Peter Murray
+
+inputs:
+  host:
+    description: The Hue bridge IP address or hostname
+    required: true
+
+  username:
+    description: The Hue bridge username to connect as
+    required: true
+
+  light_names:
+    description: An array of light names to retrieve from the bridge
+    required: true
+
+outputs:
+  lights:
+    description: The lights that were found in the Hue bridge
+
+runs:
+  using: node12
+  main: dist/index.js
