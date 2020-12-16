@@ -24,6 +24,7 @@ async function run() {
     setLightOutputs(lights);
   } catch (err) {
     core.setFailed(err.message);
+    err.stackTrace();
   }
 }
 
@@ -117,7 +118,7 @@ async function sendLightUpdate(api, state, ...ids) {
   const promises = [];
 
   ids.forEach(id => {
-    core.info(`Updating light ${id} to ${state.getPayload()}`);
+    core.info(`Updating light ${id} to ${JSON.stringify(state.getPayload())}`);
 
     promises.push(api.lights.setLightState(id, state));
   });
