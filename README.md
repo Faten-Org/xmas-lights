@@ -1,4 +1,4 @@
-# xmas-lights
+# ✨ 🎄  xmas-lights 🎄  ✨ 
 
 Winterfest 2020 GitHub Actions demo.
 
