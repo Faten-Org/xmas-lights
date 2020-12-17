@@ -17,6 +17,9 @@ The Raspberry Pi runner needs to have direct access to the GPIO pins so that it 
 
 * [Raspberry Pi LED Matrix](https://github.com/hzeller/rpi-rgb-led-matrix)
 
+![Raspberry Pi 4 with LED RGB Matrix](./raspberry_with_matrix.jpg)
+
+
 
 ## Software
 
